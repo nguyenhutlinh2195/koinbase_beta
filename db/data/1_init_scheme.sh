@@ -1,0 +1,18 @@
+#!/bin/bash
+
+mysql -u root -p$MYSQL_ROOT_PASSWORD --execute \
+"CREATE DATABASE IF NOT EXISTS tonghop;
+
+use tonghop;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(128) NOT NULL,
+    enc_credit_card VARCHAR(128) DEFAULT '',
+    money INT NOT NULL DEFAULT 0,
+    image VARCHAR(128) DEFAULT '$UPLOAD_URL/upload/ninja.png',
+    bio VARCHAR(1024) DEFAULT 'Say something about you',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);"

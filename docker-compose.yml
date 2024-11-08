@@ -1,0 +1,51 @@
+# You founded a source code leak
+# Recon is very important
+# Case study: https://supras.io/how-i-got-access-to-many-piis-through-a-source-code-leak/
+# Your Flag 1: CBJS{do_you_use_a_good_wordlist?}
+version: "3.6"
+services:
+    db:
+        build: ./db
+        command: --default-authentication-plugin=mysql_native_password
+        restart: unless-stopped
+        expose:
+            - 3306
+        environment:
+            - MYSQL_ROOT_USER=root
+            - MYSQL_ROOT_PASSWORD=96e5aca02ebf
+            - MYSQL_USER=tonghop
+            - MYSQL_DATABASE=tonghop
+            - MYSQL_PASSWORD=48b105896e5aca02ebf2
+            # - UPLOAD_URL=https://upload.koinbase.cyberjutsu-lab.tech
+            - UPLOAD_URL=http://localhost:4444
+
+    koinbase:
+        container_name: koinbase
+        restart: unless-stopped
+        build:
+            context: ./koinbase/
+        # volumes:
+        #     - ./koinbase/src:/var/www/html/
+        ports:
+            - "3333:80"
+        environment:
+            - MYSQL_HOSTNAME=db
+            - MYSQL_USER=tonghop
+            - MYSQL_DATABASE=tonghop
+            - MYSQL_PASSWORD=48b105896e5aca02ebf2
+            # - UPLOAD_URL=https://upload.koinbase.cyberjutsu-lab.tech
+            - UPLOAD_URL=http://localhost:4444
+            - APP_ENV=dev
+            # - APP_ENV=prod
+            - XOR_KEY=daylaxorkey1234
+
+    cdn:
+        container_name: cdn
+        restart: unless-stopped
+        build:
+            context: ./cdn/
+        ports:
+            - "4444:80"
+        # volumes:
+        #     - ./cdn/src:/var/www/html/
+        #     - /var/www/html/upload
